@@ -110,6 +110,11 @@ uint8_t Tm16XXReceive(void) {
 
   // Pull-up off
   pinMode(Tm1638.data_pin, OUTPUT);
+  // CLK wieder auf definierten Idle-Pegel low bringen: die Leseschleife endet
+  // mit CLK high, naechste Sendesequenz wuerde sonst mit fallender statt
+  // steigender Flanke starten und der Chip verliert das Bit-Sync.
+  digitalWrite(Tm1638.clock_pin, LOW);
+  delayMicroseconds(TM1638_CLOCK_DELAY);
   digitalWrite(Tm1638.data_pin, LOW);
 
   return temp;
@@ -129,6 +134,10 @@ uint8_t Tm1638GetButtons(void) {
   for (uint32_t i = 0; i < 4; i++) {
     keys |= Tm16XXReceive() << i;
   }
+  // TCLK_STB einhalten: letzte CLK-steigende Flanke muss STB-an-heben >= 1 us
+  // vorausgehen, und CLK muss beim STB-an-heben low stehen.
+  digitalWrite(Tm1638.clock_pin, LOW);
+  delayMicroseconds(TM1638_CLOCK_DELAY);
   digitalWrite(Tm1638.strobe_pin, HIGH);
 
   return keys;
