@@ -168,11 +168,13 @@ and setting it to 3 alternates between time and date.
 
 
 #include "SevenSegmentTM1637.h"
-#include <TM1638plus.h>
+//#include <TM1638plus.h>
+#include <TM1638plus_Model2.h>
 #include <LedControl.h>
 
 SevenSegmentTM1637 *tm1637display;
-TM1638plus *tm1638display;
+//TM1638plus *tm1638display;
+TM1638plus_Model2 *tm1638display;
 LedControl *max7219display;
 
 enum display_types
@@ -255,7 +257,8 @@ void TM1637Init(void)
   else if (TM1638 == TM1637Data.display_type)
   {
     strcpy_P(TM1637Data.model_name, PSTR("TM1638"));
-    tm1638display = new TM1638plus(Pin(GPIO_TM1638STB), Pin(GPIO_TM1638CLK), Pin(GPIO_TM1638DIO), true);
+    //tm1638display = new TM1638plus(Pin(GPIO_TM1638STB), Pin(GPIO_TM1638CLK), Pin(GPIO_TM1638DIO), true);
+    tm1638display = new TM1638plus_Model2(Pin(GPIO_TM1638STB), Pin(GPIO_TM1638CLK), Pin(GPIO_TM1638DIO), false, true);
     tm1638display->displayBegin();
   }
   else if (MAX7219 == TM1637Data.display_type)
